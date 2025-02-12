@@ -1,0 +1,34 @@
+name: Add All Issues & PRs to GitHub Project
+on:
+  workflow_dispatch:  # Allows manual trigger
+
+jobs:
+  add-items:
+    runs-on: ubuntu-latest
+    permissions:
+      issues: read
+      pull-requests: read
+      project: write
+    steps:
+      - name: Add All CCMMF Issues & PRs to Project
+        uses: actions/add-to-project@v1
+        with:
+          project-url: https://github.com/orgs/ccmmf/projects/4
+          github-token: ${{ secrets.PAT_GITHUB_PROJECT }}
+          resource-type: issue,pull_request
+      
+      - name: Add Issues & PRs from pecanproject/sipnet
+        uses: actions/add-to-project@v1
+        with:
+          project-url: https://github.com/orgs/ccmmf/projects/4
+          github-token: ${{ secrets.PAT_GITHUB_PROJECT }}
+          resource-type: issue,pull_request
+          filter: "repo:pecanproject/sipnet"
+      
+      - name: Add Issues & PRs from pecanproject with CCMMF tag
+        uses: actions/add-to-project@v1
+        with:
+          project-url: https://github.com/orgs/ccmmf/projects/4
+          github-token: ${{ secrets.PAT_GITHUB_PROJECT }}
+          resource-type: issue,pull_request
+          filter: "repo:pecanproject/* label:ccmmf"
