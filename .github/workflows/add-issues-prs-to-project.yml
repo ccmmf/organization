@@ -8,7 +8,7 @@ jobs:
     permissions:
       issues: read
       pull-requests: read
-      project: write
+      repository-projects: write
     steps:
       - name: Add All CCMMF Issues & PRs to Project
         uses: actions/add-to-project@v1
