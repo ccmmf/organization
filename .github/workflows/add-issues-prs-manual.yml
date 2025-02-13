@@ -1,0 +1,34 @@
+name: Add Issues & PRs to GitHub Project
+on:
+  workflow_dispatch:
+
+jobs:
+  add-items:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fetch and Add All Issues & PRs from CCMMF
+        if: startsWith(github.repository, 'ccmmf/')
+        run: |
+          for issue in $(gh issue list --repo ${{ github.repository }} --json number --jq '.[].number'); do
+            gh api graphql -F projectId="https://github.com/orgs/ccmmf/projects/4" -F contentId="$issue"
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_CCMMF_PROJECTS }}
+
+      - name: Fetch and Add All Issues & PRs from pecanproject/sipnet
+        if: github.repository == 'pecanproject/sipnet'
+        run: |
+          for issue in $(gh issue list --repo ${{ github.repository }} --json number --jq '.[].number'); do
+            gh api graphql -F projectId="https://github.com/orgs/ccmmf/projects/4" -F contentId="$issue"
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_PECAN_PROJECTS }}
+
+      - name: Fetch and Add Issues & PRs labeled ccmmf from pecanproject/*
+        if: startsWith(github.repository, 'pecanproject/')
+        run: |
+          for issue in $(gh issue list --repo ${{ github.repository }} --label ccmmf --json number --jq '.[].number'); do
+            gh api graphql -F projectId="https://github.com/orgs/ccmmf/projects/4" -F contentId="$issue"
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.PAT_PECAN_PROJECTS }}
