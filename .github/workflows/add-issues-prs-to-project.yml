@@ -1,38 +1,37 @@
-name: Add Issues & PRs to GitHub Project
+name: Add Issues & PRs to GitHub Project Board
 
 on:
-  workflow_dispatch:
+  issues:
+    types: [opened, reopened, labeled]
+  pull_request:
+    types: [opened, reopened, labeled]
 
 jobs:
-  add-items:
+  add-to-project:
     runs-on: ubuntu-latest
     steps:
-      - name: Install GitHub CLI
-        run: sudo apt-get install gh
-      
-      - name: Fetch and Add All Issues & PRs from CCMMF
+      # 1. For all repos in ccmmf org
+      - name: Add items from ccmmf org
         if: startsWith(github.repository, 'ccmmf/')
-        run: |
-          for issue in $(gh issue list --repo ${{ github.repository }} --json number --jq '.[] | .node_id'); do
-            gh api graphql -F query='mutation { addProjectV2ItemById(input: {projectId: "PVT_kwDOChcxGs4AkkOy", contentId: "'$issue'"}) { item { id } } }'
-          done
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT_CCMMF_PROJECTS }}
+        uses: actions/add-to-project@v1.0.2
+        with:
+          project-url: https://github.com/orgs/ccmmf/projects/4
+          github-token: ${{ secrets.PAT_CCMMF_PROJECTS }}
 
-      - name: Fetch and Add All Issues & PRs from pecanproject/sipnet
+      # 2. For the pecanproject/sipnet repo
+      - name: Add items from pecanproject/sipnet
         if: github.repository == 'pecanproject/sipnet'
-        run: |
-          for issue in $(gh issue list --repo ${{ github.repository }} --json number --jq '.[] | .node_id'); do
-            gh api graphql -F query='mutation { addProjectV2ItemById(input: {projectId: "PVT_kwDOChcxGs4AkkOy", contentId: "'$issue'"}) { item { id } } }'
-          done
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT_PECAN_PROJECTS }}
+        uses: actions/add-to-project@v1.0.2
+        with:
+          project-url: https://github.com/orgs/ccmmf/projects/4
+          github-token: ${{ secrets.PAT_PECAN_PROJECTS }}
 
-      - name: Fetch and Add Issues & PRs labeled ccmmf from pecanproject/*
-        if: startsWith(github.repository, 'pecanproject/')
-        run: |
-          for issue in $(gh issue list --repo ${{ github.repository }} --label ccmmf --json number --jq '.[] | .node_id'); do
-            gh api graphql -F query='mutation { addProjectV2ItemById(input: {projectId: "PVT_kwDOChcxGs4AkkOy", contentId: "'$issue'"}) { item { id } } }'
-          done
-        env:
-          GITHUB_TOKEN: ${{ secrets.PAT_PECAN_PROJECTS }}
+      # 3. For all other repos in pecanproject/*, only add items labeled "ccmmf"
+      - name: Add items labeled ccmmf from pecanproject repos
+        if: startsWith(github.repository, 'pecanproject/') && (github.repository != 'pecanproject/sipnet')
+        uses: actions/add-to-project@v1.0.2
+        with:
+          project-url: https://github.com/orgs/ccmmf/projects/4
+          github-token: ${{ secrets.PAT_PECAN_PROJECTS }}
+          labeled: ccmmf
+          label-operator: OR
