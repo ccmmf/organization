@@ -14,7 +14,7 @@ jobs:
         if: startsWith(github.repository, 'ccmmf/')
         run: |
           for issue in $(gh issue list --repo ${{ github.repository }} --json number --jq '.[] | .number'); do
-            gh api graphql -F query='mutation { addProjectV2ItemById(input: {projectId: "PVT_12345", contentId: "'$issue'"}) { item { id } } }'
+            gh api graphql -F query='mutation { addProjectV2ItemById(input: {projectId: "PVT_kwDOChcxGs4AkkOy", contentId: "'$issue'"}) { item { id } } }'
           done
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_CCMMF_PROJECTS }}
@@ -23,7 +23,7 @@ jobs:
         if: github.repository == 'pecanproject/sipnet'
         run: |
           for issue in $(gh issue list --repo ${{ github.repository }} --json number --jq '.[] | .number'); do
-            gh api graphql -F query='mutation { addProjectV2ItemById(input: {projectId: "PVT_12345", contentId: "'$issue'"}) { item { id } } }'
+            gh api graphql -F query='mutation { addProjectV2ItemById(input: {projectId: "PVT_kwDOChcxGs4AkkOy", contentId: "'$issue'"}) { item { id } } }'
           done
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_PECAN_PROJECTS }}
@@ -32,7 +32,7 @@ jobs:
         if: startsWith(github.repository, 'pecanproject/')
         run: |
           for issue in $(gh issue list --repo ${{ github.repository }} --label ccmmf --json number --jq '.[] | .number'); do
-            gh api graphql -F query='mutation { addProjectV2ItemById(input: {projectId: "PVT_12345", contentId: "'$issue'"}) { item { id } } }'
+            gh api graphql -F query='mutation { addProjectV2ItemById(input: {projectId: "PVT_kwDOChcxGs4AkkOy", contentId: "'$issue'"}) { item { id } } }'
           done
         env:
           GITHUB_TOKEN: ${{ secrets.PAT_PECAN_PROJECTS }}
