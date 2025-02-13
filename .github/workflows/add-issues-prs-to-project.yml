@@ -1,34 +1,30 @@
-name: Add All Issues & PRs to GitHub Project
+name: Add Issues & PRs to GitHub Project
 on:
-  workflow_dispatch:  # Allows manual trigger
+  workflow_dispatch:
 
 jobs:
   add-items:
     runs-on: ubuntu-latest
-    permissions:
-      issues: read
-      pull-requests: read
-      repository-projects: write
     steps:
-      - name: Add All CCMMF Issues & PRs to Project
+      - name: Add All Issues & PRs from CCMMF
+        if: startsWith(github.repository, 'ccmmf/')
         uses: actions/add-to-project@v1.0.2
         with:
           project-url: https://github.com/orgs/ccmmf/projects/4
-          github-token: ${{ secrets.PAT_GITHUB_PROJECT }}
-          resource-type: issue,pull_request
-      
-      - name: Add Issues & PRs from pecanproject/sipnet
+          github-token: ${{ secrets.PAT_CCMMF_PROJECTS }}
+
+      - name: Add All Issues & PRs from pecanproject/sipnet
+        if: github.repository == 'pecanproject/sipnet'
         uses: actions/add-to-project@v1.0.2
         with:
           project-url: https://github.com/orgs/ccmmf/projects/4
-          github-token: ${{ secrets.PAT_GITHUB_PROJECT }}
-          resource-type: issue,pull_request
-          filter: "repo:pecanproject/sipnet"
-      
-      - name: Add Issues & PRs from pecanproject with CCMMF tag
+          github-token: ${{ secrets.PAT_PECAN_PROJECTS }}
+
+      - name: Add Issues & PRs labeled ccmmf from pecanproject/*
+        if: startsWith(github.repository, 'pecanproject/')
         uses: actions/add-to-project@v1.0.2
         with:
           project-url: https://github.com/orgs/ccmmf/projects/4
-          github-token: ${{ secrets.PAT_GITHUB_PROJECT }}
-          resource-type: issue,pull_request
-          filter: "repo:pecanproject/* label:ccmmf"
+          github-token: ${{ secrets.PAT_PECAN_PROJECTS }}
+          labeled: "ccmmf"
+          label-operator: "OR"
