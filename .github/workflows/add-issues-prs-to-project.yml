@@ -13,7 +13,7 @@ jobs:
       - name: Fetch and Add All Issues & PRs from CCMMF
         if: startsWith(github.repository, 'ccmmf/')
         run: |
-          for issue in $(gh issue list --repo ${{ github.repository }} --json number --jq '.[] | .number'); do
+          for issue in $(gh issue list --repo ${{ github.repository }} --json number --jq '.[] | .node_id'); do
             gh api graphql -F query='mutation { addProjectV2ItemById(input: {projectId: "PVT_kwDOChcxGs4AkkOy", contentId: "'$issue'"}) { item { id } } }'
           done
         env:
@@ -22,7 +22,7 @@ jobs:
       - name: Fetch and Add All Issues & PRs from pecanproject/sipnet
         if: github.repository == 'pecanproject/sipnet'
         run: |
-          for issue in $(gh issue list --repo ${{ github.repository }} --json number --jq '.[] | .number'); do
+          for issue in $(gh issue list --repo ${{ github.repository }} --json number --jq '.[] | .node_id'); do
             gh api graphql -F query='mutation { addProjectV2ItemById(input: {projectId: "PVT_kwDOChcxGs4AkkOy", contentId: "'$issue'"}) { item { id } } }'
           done
         env:
@@ -31,7 +31,7 @@ jobs:
       - name: Fetch and Add Issues & PRs labeled ccmmf from pecanproject/*
         if: startsWith(github.repository, 'pecanproject/')
         run: |
-          for issue in $(gh issue list --repo ${{ github.repository }} --label ccmmf --json number --jq '.[] | .number'); do
+          for issue in $(gh issue list --repo ${{ github.repository }} --label ccmmf --json number --jq '.[] | .node_id'); do
             gh api graphql -F query='mutation { addProjectV2ItemById(input: {projectId: "PVT_kwDOChcxGs4AkkOy", contentId: "'$issue'"}) { item { id } } }'
           done
         env:
