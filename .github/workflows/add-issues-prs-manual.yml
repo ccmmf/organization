@@ -1,4 +1,4 @@
-name: Add Issues & PRs to GitHub Project
+name: Manually Add Issues & PRs to GitHub Project
 on:
   workflow_dispatch:
 
