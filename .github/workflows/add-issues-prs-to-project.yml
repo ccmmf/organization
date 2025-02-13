@@ -1,7 +1,6 @@
 name: Add Issues & PRs to GitHub Project Board
 
 on:
-  workflow_dispatch:
   issues:
     types: [opened, reopened, labeled]
   pull_request:
